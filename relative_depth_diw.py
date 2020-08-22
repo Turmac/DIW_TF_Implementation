@@ -6,6 +6,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import math
 
+DIW_PATH = ''
 
 batch_size = 4
 input_height = 240
@@ -197,7 +198,7 @@ merged = tf.summary.merge_all()
 
 # Data loader
 relative_depth_info = dict()
-path = 'F:/pyWorkspace/diw2/diw/DIW_Annotations/'
+path = DIW_PATH
 with open(path+'DIW_train_val.csv', 'r') as fin:
     relative_sign = {'<': -1, '=': 0, '>': 1}
 
@@ -249,7 +250,7 @@ with open(path+'DIW_train_val.csv', 'r') as fin:
 
 
 def load_images(indices):
-    path = 'F:/pyWorkspace/diw2/diw/'
+    path = DIW_PATH
     images = list()
     for i in range(len(indices)):
         filename = relative_depth_info[indices[i]][0]
@@ -283,11 +284,12 @@ with tf.Session() as sess:
     train_writer = tf.summary.FileWriter('log/relative_depth_diw', sess.graph)
 
     sess.run(tf.global_variables_initializer()) #initialize variables 
-    #saver.restore(sess, 'checkpoints/backup/diw/model1544498436.376661.ckpt')
-    saver.restore(sess, 'checkpoints/backup/NYU/best_model.ckpt')
-    print('Model restored')
 
-    num_epochs = 2
+    # if training from previous checkpoint
+    #saver.restore(sess, 'checkpoints/diw/model.ckpt')
+    #print('Model restored')
+
+    num_epochs = 20
     iters = 0
     for epoch in range(num_epochs):
         total_loss = 0.0
